@@ -18,8 +18,6 @@ class RegisterViewController: UIViewController {
     @IBOutlet weak var password: UITextField!
     @IBOutlet weak var confirompass: UITextField!
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -63,8 +61,20 @@ class RegisterViewController: UIViewController {
                                     }
                                 })
                                 
+                                
+                                let formatter = DateFormatter()
+                                // initially set the format based on your datepicker date
+                                formatter.dateFormat = "dd-MMM-yyyy HH:mm:ss"
+                                let myString = formatter.string(from: Date())
+                                // convert your string to date
+                                let yourDate = formatter.date(from: myString)
+                                //then again set the date format whhich type of output you need
+                                formatter.dateFormat = "dd-MMM-yyyy"
+                                // again convert your date to string
+                                let myStringafd = formatter.string(from: yourDate!)
+                                
                                 let employeeCheck = ref.child("Employees").child(uid).child("ComeIn")
-                                employeeCheck.updateChildValues(["Check":false], withCompletionBlock: { (err, ref) in
+                                employeeCheck.updateChildValues(["Check":false,"PreviousDate":myStringafd], withCompletionBlock: { (err, ref) in
                                     if err != nil{
                                         print(err)
                                         return

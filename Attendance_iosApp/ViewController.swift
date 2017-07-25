@@ -63,26 +63,36 @@ class ViewController: UIViewController {
             
             let employeeCheck = ref.child("Employees").child(uid).child("ComeIn")
             
-            guard let previousDate = self.defaults.value(forKey: "previousDate") else {
-                
-                return
-            }
             
-            
-            if previousDate as! String != currentDate{
+            employeeCheck.child("PreviousDate").observeSingleEvent(of:.value, with: {(DataSnapshot) in
                 
-                employeeCheck.updateChildValues(["Check":false], withCompletionBlock: { (err, ref) in
-                    if err != nil{
-                        print(err)
-                        return
-                    }
-                })
+                let previousDate = DataSnapshot.value as? String
+                print("check123=\(String(describing: previousDate))")
                 
-                
-//                print("currentdate123=\(currentDate)")
-//                print("currentdate123=\(previousDate)")
-            }
+                if previousDate != currentDate{
+                    
+                    employeeCheck.updateChildValues(["Check":false], withCompletionBlock: { (err, ref) in
+                        if err != nil{
+                            print(err)
+                            return
+                        }
+                    })
+                    
+                }
 
+                
+                
+                
+            })
+            
+            
+//            guard let previousDate = self.defaults.value(forKey: "previousDate") else {
+//                
+//                return
+//            }
+            
+            
+            
         }
         
     }
@@ -273,7 +283,7 @@ extension ViewController: JTAppleCalendarViewDelegate{
                                     }
                                 })
                 
-                                employeeReferenceIn.updateChildValues(["Check":true], withCompletionBlock: { (err, ref) in
+                                employeeReferenceIn.updateChildValues(["Check":true,"PreviousDate":myStringafd], withCompletionBlock: { (err, ref) in
                                     if err != nil{
                                         print(err)
                                         return
