@@ -63,15 +63,27 @@ class RegisterViewController: UIViewController {
                                     }
                                 })
                                 
-                                let employeeCheck = ref.child("Employees").child(uid).child("ComeIn")
-                                employeeCheck.updateChildValues(["Check":false], withCompletionBlock: { (err, ref) in
+                                
+                                
+                                let formatter = DateFormatter()
+                                // initially set the format based on your datepicker date
+                                formatter.dateFormat = "dd-MMM-yyyy HH:mm:ss"
+                                let myString = formatter.string(from: Date())
+                                // convert your string to date
+                                let yourDate = formatter.date(from: myString)
+                                //then again set the date format whhich type of output you need
+                                formatter.dateFormat = "dd-MMM-yyyy"
+                                // again convert your date to string
+                                let myStringafd = formatter.string(from: yourDate!)
+                                
+                                let employeeStatus = ref.child("Employees").child(uid).child("Status")
+                                employeeStatus.updateChildValues(["Check":false,"PreviousDate":myStringafd], withCompletionBlock: { (err, ref) in
                                     if err != nil{
                                         print(err)
                                         return
                                     }
                                 })
-                                
-                               // userReference.child(<#T##pathString: String##String#>)
+                              
                                 
                                 print("Save user successfully into firebase DB")
                                 
@@ -79,7 +91,7 @@ class RegisterViewController: UIViewController {
                                 self.password.text = ""
                                 self.confirompass.text = ""
                                 self.userName.text = ""
-        
+                                
         
                             }else{
                                 let alertController = UIAlertController(title: "Error", message: error?.localizedDescription, preferredStyle: .alert)
@@ -87,10 +99,10 @@ class RegisterViewController: UIViewController {
                                 alertController.addAction(defaultAction)
                                 self.present(alertController, animated: true, completion: nil)
                             }
-        
+                            
                         }
         
-        
+                        try! Auth.auth().signOut()
                     }
         
                 }else{

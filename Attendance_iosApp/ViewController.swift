@@ -26,7 +26,8 @@ class ViewController: UIViewController {
     var check:Bool!
     var previousDat:String!
     
-    let defaults = UserDefaults.standard
+    
+    //let defaults = UserDefaults.standard
     
 
     override func viewDidLoad() {
@@ -50,40 +51,37 @@ class ViewController: UIViewController {
         // again convert your date to string
         let currentDate = formatter.string(from: yourDate!)
         
-        let ref = Database.database().reference(fromURL: "https://attendanceios-1be2b.firebaseio.com/")
+        
+        let uid = Auth.auth().currentUser?.uid
+        if uid == nil{
+            return
+        }
         
         
-        
-        Auth.auth().addStateDidChangeListener { (auth, user) in
-            print("user id=\(String(describing: user?.uid))")
-            guard let uid = user?.uid else{
-                return
-            }
+        let employeeStatus = Database.database().reference().child("Employees").child(uid!).child("Status")
+        employeeStatus.child("PreviousDate").observeSingleEvent(of:.value, with: {(DataSnapshot) in
+            
+            let previousDate = DataSnapshot.value as? String
+            print("check123=\(String(describing: previousDate))")
             
             
-            let employeeCheck = ref.child("Employees").child(uid).child("ComeIn")
-            
-            guard let previousDate = self.defaults.value(forKey: "previousDate") else {
+            if previousDate != currentDate{
                 
-                return
-            }
-            
-            
-            if previousDate as! String != currentDate{
-                
-                employeeCheck.updateChildValues(["Check":false], withCompletionBlock: { (err, ref) in
+                employeeStatus.updateChildValues(["Check":false], withCompletionBlock: { (err, ref) in
                     if err != nil{
                         print(err)
                         return
                     }
                 })
                 
-                
-//                print("currentdate123=\(currentDate)")
-//                print("currentdate123=\(previousDate)")
             }
+            
+            
+            
+            
+        })
 
-        }
+        
         
     }
 
@@ -156,15 +154,6 @@ class ViewController: UIViewController {
     
     
     func LogoutButton(){
-//        let rightButtonItem = UIBarButtonItem.init(
-//            title: "Logout",
-//            style: .done,
-//            target: self,
-//            action: Selector(("rightButtonAction:"))
-//        )
-//        
-//        self.navigationItem.rightBarButtonItem = rightButtonItem
-        
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(ViewController.rightButtonAction))
     }
@@ -181,6 +170,7 @@ class ViewController: UIViewController {
     
     
     func rightButtonAction(){
+        try! Auth.auth().signOut()
         let storyBoard = UIStoryboard(name:"Main",bundle:nil)
         let vcOBJ = storyBoard.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
         // self.navigationController?.navigationBar.barTintColor = UIColor.green
@@ -216,16 +206,12 @@ extension ViewController: JTAppleCalendarViewDelegate{
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
 //        handleCellSelectedColor(view: cell, cellState: cellState)
         handleCellTextColor(view: cell, cellState: cellState)
-       // print("date123=\(cellState.date)")
         
+        let uid = Auth.auth().currentUser?.uid
+        if uid == nil{
+            return
+        }
         
-        
-        Auth.auth().addStateDidChangeListener { auth, user in
-            guard let uid = user?.uid else{
-                return
-            }
-            
-            
             
             let formatter = DateFormatter()
             // initially set the format based on your datepicker date
@@ -249,50 +235,48 @@ extension ViewController: JTAppleCalendarViewDelegate{
             self.handleCellSelectedColor(view: cell, cellState: cellState)
              print("date12=\(myStringafd)")
              let values = [myStringafd:myString]
-            
-            // employeeReference.setValue(values)
-            
-            self.defaults.set(myStringafd, forKey: "previousDate")
-            self.defaults.synchronize()
-            //self.previousDat = myStringafd
-            let ref = Database.database().reference(fromURL: "https://attendanceios-1be2b.firebaseio.com/")
-            let employeeReferenceIn = ref.child("Employees").child(uid).child("ComeIn")
-            let employeeReferenceOut = ref.child("Employees").child(uid).child("ComeOut")
+            let ref = Database.database().reference()
+            let employeeStatus = ref.child("Employees").child(uid!).child("Status")
+            let employeeReferenceIn = ref.child("Employees").child(uid!).child("ComeIn")
+            let employeeReferenceOut = ref.child("Employees").child(uid!).child("ComeOut")
             //let check:Bool!
             
-            employeeReferenceIn.child("Check").observeSingleEvent(of:.value, with: {(DataSnapshot) in
-                
-                self.check = DataSnapshot.value as? Bool
-                print("check123=\(self.check)")
-                
-                        if !self.check{
-                                employeeReferenceIn.updateChildValues(values, withCompletionBlock: { (err, ref) in
-                                    if err != nil{
-                                        print(err)
-                                        return
+        
+        
+                    employeeStatus.child("Check").observeSingleEvent(of:.value, with: {(DataSnapshot) in
+        
+                        self.check = DataSnapshot.value as? Bool
+                        print("check125=\(self.check)")
+        
+                                if !self.check{
+                                        employeeReferenceIn.updateChildValues(values, withCompletionBlock: { (err, ref) in
+                                            if err != nil{
+                                                print(err)
+                                                return
+                                            }
+                                        })
+        
+                                        employeeStatus.updateChildValues(["Check":true,"PreviousDate":myStringafd], withCompletionBlock: { (err, ref) in
+                                            if err != nil{
+                                                print(err)
+                                                return
+                                            }
+                                        })
+        
+                                    }else{
+        
+                                        employeeReferenceOut.updateChildValues(values, withCompletionBlock: { (err, ref) in
+                                            if err != nil{
+                                                print(err)
+                                                return
+                                            }
+                                        })
                                     }
-                                })
-                
-                                employeeReferenceIn.updateChildValues(["Check":true], withCompletionBlock: { (err, ref) in
-                                    if err != nil{
-                                        print(err)
-                                        return
-                                    }
-                                })
-                                
-                            }else{
-                
-                                employeeReferenceOut.updateChildValues(values, withCompletionBlock: { (err, ref) in
-                                    if err != nil{
-                                        print(err)
-                                        return
-                                    }
-                                })
-                            }
-                
-            })
-            
-        }
+        
+                    })
+        
+       // }
+        
         
     }
     
