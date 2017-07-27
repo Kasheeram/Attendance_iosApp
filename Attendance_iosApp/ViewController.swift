@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var calendarView: JTAppleCalendarView!
     @IBOutlet weak var year: UILabel!
     @IBOutlet weak var month: UILabel!
+    @IBOutlet weak var collectionview: JTAppleCalendarView!
     
     
     let outsideMonthColor = UIColor(colorWithHexValue: 0x584a66)
@@ -34,6 +35,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         LogoutButton()
+        
+        self.collectionview.isScrollEnabled = false;
         
         
         setupCalendarView()

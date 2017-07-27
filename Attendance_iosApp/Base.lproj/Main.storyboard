@@ -199,6 +199,7 @@
                     </view>
                     <connections>
                         <outlet property="calendarView" destination="JJP-gi-LTq" id="tW2-SP-pPN"/>
+                        <outlet property="collectionview" destination="JJP-gi-LTq" id="8OF-YT-B9q"/>
                         <outlet property="month" destination="n3t-Lg-HwZ" id="ajJ-V6-j6f"/>
                         <outlet property="year" destination="xWQ-VO-CrV" id="SHn-7w-9Vj"/>
                     </connections>
