@@ -24,7 +24,7 @@ class LoginViewController: UIViewController {
 //            print("user id=\(String(describing: user?.uid))")
 //        }
         
-        self.navigationController?.navigationBar.barTintColor = UIColor.yellow
+        self.navigationController?.navigationBar.barTintColor = UIColor.orange
        // let interval = laterDate.timeIntervalSinceDate(earlierDate)
 
         
@@ -92,7 +92,7 @@ class LoginViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationItem.setHidesBackButton(true, animated:true);
-        self.navigationController?.navigationBar.barTintColor = UIColor.yellow
+        self.navigationController?.navigationBar.barTintColor = UIColor.orange
     }
 
     

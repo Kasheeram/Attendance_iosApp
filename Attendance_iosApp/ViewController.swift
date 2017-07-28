@@ -16,6 +16,12 @@ class ViewController: UIViewController {
     @IBOutlet weak var year: UILabel!
     @IBOutlet weak var month: UILabel!
     @IBOutlet weak var collectionview: JTAppleCalendarView!
+   
+    
+    let currentDate = Date()
+    let formatter = DateFormatter()
+    let userCalendar = Calendar.current
+    let requestedComponent: Set<Calendar.Component> = [.month,.day,.hour,.minute,.second]
     
     
     let outsideMonthColor = UIColor(colorWithHexValue: 0x584a66)
@@ -23,26 +29,24 @@ class ViewController: UIViewController {
     let selectedMonthColor = UIColor(colorWithHexValue: 0x3a294b)
     let currentDateSelectedViewColor = UIColor(colorWithHexValue: 0x4e3f5d)
     let todayDate = UIColor.orange
-    let formatter = DateFormatter()
+   
     var check:Bool!
     var previousDat:String!
+    let timeDetails = [[String]]()
     
     
-    //let defaults = UserDefaults.standard
-    
-
+   
     override func viewDidLoad() {
         super.viewDidLoad()
         
         LogoutButton()
-        
-        self.collectionview.isScrollEnabled = false;
+        //self.collectionview.isScrollEnabled = false;
         
         
         setupCalendarView()
         calendarView.scrollToDate(Date.init())
         
-        let formatter = DateFormatter()
+       // let formatter = DateFormatter()
         // initially set the format based on your datepicker date
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
@@ -142,8 +146,12 @@ class ViewController: UIViewController {
             validCell.selectedView.backgroundColor = hexStringToUIColor (hex:"#FBC94D")
         }else{
             validCell.selectedView.isHidden = true
+            
         }
+        
+        
     }
+    
     
     func setupViewOfCalendar(from visbleDates:DateSegmentInfo){
         let date = visbleDates.monthDates.first!.date
@@ -159,6 +167,7 @@ class ViewController: UIViewController {
     func LogoutButton(){
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(ViewController.rightButtonAction))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Status", style: .plain, target: self, action: #selector(ViewController.leftButtonAction))
     }
     
     override func didReceiveMemoryWarning() {
@@ -181,6 +190,17 @@ class ViewController: UIViewController {
 
         
     }
+    func leftButtonAction(){
+        
+        
+        let storyBoard = UIStoryboard(name:"Main",bundle:nil)
+        let vcOBJ = storyBoard.instantiateViewController(withIdentifier: "TimeDetailsTableViewController") as! TimeDetailsTableViewController
+        // self.navigationController?.navigationBar.barTintColor = UIColor.green
+        self.navigationController?.pushViewController(vcOBJ, animated: true)
+        
+        
+    }
+
     
 }
 
@@ -210,6 +230,8 @@ extension ViewController: JTAppleCalendarViewDelegate{
 //        handleCellSelectedColor(view: cell, cellState: cellState)
         handleCellTextColor(view: cell, cellState: cellState)
         
+        print("kashee123")
+        
         let uid = Auth.auth().currentUser?.uid
         if uid == nil{
             return
@@ -234,12 +256,14 @@ extension ViewController: JTAppleCalendarViewDelegate{
             if selectedDate != myStringafd{
                 return
             }
-            
+//        print("kashee1234")
+        
             self.handleCellSelectedColor(view: cell, cellState: cellState)
              print("date12=\(myStringafd)")
              let values = [myStringafd:myString]
             let ref = Database.database().reference()
             let employeeStatus = ref.child("Employees").child(uid!).child("Status")
+            let employeeDuration = ref.child("Employees").child(uid!).child("Duration")
             let employeeReferenceIn = ref.child("Employees").child(uid!).child("ComeIn")
             let employeeReferenceOut = ref.child("Employees").child(uid!).child("ComeOut")
             //let check:Bool!
@@ -258,7 +282,9 @@ extension ViewController: JTAppleCalendarViewDelegate{
                                                 return
                                             }
                                         })
-        
+                                    
+                                    
+                                    UserDefaults.standard.set(Date(), forKey: "inTiming")
                                         employeeStatus.updateChildValues(["Check":true,"PreviousDate":myStringafd], withCompletionBlock: { (err, ref) in
                                             if err != nil{
                                                 print(err)
@@ -267,18 +293,40 @@ extension ViewController: JTAppleCalendarViewDelegate{
                                         })
         
                                     }else{
-        
+                                
                                         employeeReferenceOut.updateChildValues(values, withCompletionBlock: { (err, ref) in
                                             if err != nil{
                                                 print(err)
+                                                print("kashee12345")
                                                 return
                                             }
                                         })
+                                    
+                                    
+                                    
+                                    UserDefaults.standard.set(Date(), forKey: "outTiming")
+                                    UserDefaults.standard.synchronize()
+                                    
+                                    formatter.dateFormat = "dd/MM/yy hh:mm:ss"
+                                    let timeIn = UserDefaults.standard.object(forKey: "inTiming") as? Date
+                                    let timeOut = UserDefaults.standard.object(forKey: "outTiming") as? Date
+                                    let timeDifference = self.userCalendar.dateComponents(self.requestedComponent, from: timeIn!, to: timeOut!)
+                                    
+                                    let time = "\(timeDifference.hour!):\(timeDifference.minute!)"
+                                    
+                                    employeeDuration.updateChildValues([myStringafd:time], withCompletionBlock: { (err, ref) in
+                                        if err != nil{
+                                            print(err)
+                                            return
+                                        }
+                                    })
+
+                                    
+                                    
                                     }
-        
+                        
+                      
                     })
-        
-       // }
         
         
     }
