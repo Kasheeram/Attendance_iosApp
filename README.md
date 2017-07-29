@@ -17,6 +17,7 @@ From this screen user can register and all the user details will be stored in fi
 ![calendar](https://user-images.githubusercontent.com/19978447/28743074-60df3560-745e-11e7-838f-e19ebd572a19.png)
 
 This is the calendar and currented date is selected byy default and date color is red that means user din't mark the attendance
+Note: Before going to calendar i am checking the user current location's latitude, longitude for checking that user is peresented in office or not, if user location is outside the define region then user attendance will not be accepted.
 
 ## After user tapped on the current date
 
