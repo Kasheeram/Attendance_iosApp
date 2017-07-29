@@ -1,4 +1,4 @@
-This is the attendance app for the employees
+# This is the attendance app for the employees
 
 User can register and login to this app, for user authentication i have used firbase authentication and i also use firebase 
 databaset to store employee details and attendance after login youser can mark-up the attendance by tapping on the current 
