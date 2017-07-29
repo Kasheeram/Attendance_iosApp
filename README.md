@@ -1,7 +1,7 @@
 # Attendance iOs App for Employees
 
 ## Login Screen
-<img src="https://user-images.githubusercontent.com/19978447/28743013-b734ef38-745c-11e7-96dc-a702db7041e4.png" width="1000" height="200">
+<img src="https://user-images.githubusercontent.com/19978447/28743013-b734ef38-745c-11e7-96dc-a702db7041e4.png" width="400" height="500">
 
 
 From this screen user can register and login to this app, for the user authentication i used firbase authentication
