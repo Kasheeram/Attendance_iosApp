@@ -317,7 +317,7 @@
             </objects>
             <point key="canvasLocation" x="1300" y="142.57871064467767"/>
         </scene>
-        <!--Login View Controller-->
+        <!--Sign In-->
         <scene sceneID="r2w-QK-39z">
             <objects>
                 <viewController storyboardIdentifier="LoginViewController" id="jd0-i0-vJr" customClass="LoginViewController" customModule="Attendance_iosApp" customModuleProvider="target" sceneMemberID="viewController">
@@ -416,7 +416,7 @@
                             <constraint firstAttribute="trailing" secondItem="8sa-W8-KTY" secondAttribute="trailing" constant="16" id="uWy-Pv-2Oh"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="3nm-9e-ScM"/>
+                    <navigationItem key="navigationItem" title="Sign In" id="3nm-9e-ScM"/>
                     <connections>
                         <outlet property="emailId" destination="lbs-CE-esT" id="nbr-62-RPt"/>
                         <outlet property="password" destination="ND4-w5-kKM" id="BLf-SZ-iPq"/>

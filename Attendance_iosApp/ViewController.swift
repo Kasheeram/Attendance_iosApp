@@ -143,7 +143,12 @@ class ViewController: UIViewController {
         
         if validCell.isSelected{
             validCell.selectedView.isHidden = false
+//            let timeDuration = UserDefaults.standard.value(forKey: "timeduration") as! String
+//            if timeDuration >= "3" {
+                //validCell.selectedView.backgroundColor = .green
+//            }else{
             validCell.selectedView.backgroundColor = hexStringToUIColor (hex:"#FBC94D")
+//            }
         }else{
             validCell.selectedView.isHidden = true
             
@@ -313,6 +318,8 @@ extension ViewController: JTAppleCalendarViewDelegate{
                                     let timeDifference = self.userCalendar.dateComponents(self.requestedComponent, from: timeIn!, to: timeOut!)
                                     
                                     let time = "\(timeDifference.hour!):\(timeDifference.minute!)"
+                                    let timeduration = "\(timeDifference.hour!)"
+                                    UserDefaults.standard.set(timeduration, forKey: "timeduration")
                                     
                                     employeeDuration.updateChildValues([myStringafd:time], withCompletionBlock: { (err, ref) in
                                         if err != nil{

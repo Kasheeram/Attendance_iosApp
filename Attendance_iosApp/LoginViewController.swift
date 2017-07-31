@@ -28,6 +28,16 @@ class LoginViewController: UIViewController {
        // let interval = laterDate.timeIntervalSinceDate(earlierDate)
 
         
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(LoginViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
+        
+        
+        // Do any additional setup after loading the view.
+    }
+    
+    func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
     }
 
 
@@ -84,6 +94,7 @@ class LoginViewController: UIViewController {
         let vcOBJ = storyBoard.instantiateViewController(withIdentifier: "RegisterViewController") as! RegisterViewController
         //self.presentedViewController?.show(vcOBJ, sender: true)
         // self.navigationController?.navigationBar.barTintColor = UIColor.green
+        vcOBJ.title = "Sign Up"
         self.navigationController?.pushViewController(vcOBJ, animated: true)
 
         
