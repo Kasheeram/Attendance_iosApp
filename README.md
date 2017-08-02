@@ -8,7 +8,7 @@ From this screen user can register and login to this app, for the user authentic
 
 ## Registration Screen 
 
-<img src="(https://user-images.githubusercontent.com/19978447/28881719-aac5d36c-77c6-11e7-8329-bd74cd6e593d.png" width="250" height="400">
+<img src="https://user-images.githubusercontent.com/19978447/28881719-aac5d36c-77c6-11e7-8329-bd74cd6e593d.png" width="250" height="400">
 
 From this screen user can register and all the user details will be stored in firebase database and user credentials will store in firebase authentication with generating a unique user id  
 
