@@ -1,14 +1,14 @@
 # Attendance iOs App for Employees
 
 ## Login Screen
-<img src="https://user-images.githubusercontent.com/19978447/28743013-b734ef38-745c-11e7-96dc-a702db7041e4.png" width="250" height="400">
+<img src="https://user-images.githubusercontent.com/19978447/28881686-8a2f58bc-77c6-11e7-8ba3-b9222178e511.png" width="250" height="400">
 
 
 From this screen user can register and login to this app, for the user authentication i used firbase authentication
 
 ## Registration Screen 
 
-<img src="https://user-images.githubusercontent.com/19978447/28743034-6ffb2938-745d-11e7-9803-eb9f617a21be.png" width="250" height="400">
+<img src="(https://user-images.githubusercontent.com/19978447/28881719-aac5d36c-77c6-11e7-8329-bd74cd6e593d.png" width="250" height="400">
 
 From this screen user can register and all the user details will be stored in firebase database and user credentials will store in firebase authentication with generating a unique user id  
 
