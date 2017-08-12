@@ -27,6 +27,8 @@ class TimeDetailsTableViewController: UITableViewController {
             return
         }
         
+        
+        
         let ref = Database.database().reference()
         let employeeReference = ref.child("Employees").child(uid!)
         

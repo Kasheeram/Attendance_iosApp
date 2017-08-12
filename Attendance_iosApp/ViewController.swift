@@ -9,13 +9,19 @@
 import UIKit
 import JTAppleCalendar
 import Firebase
+import CoreLocation
 
-class ViewController: UIViewController {
+class ViewController: UIViewController,CLLocationManagerDelegate {
     
     @IBOutlet weak var calendarView: JTAppleCalendarView!
     @IBOutlet weak var year: UILabel!
     @IBOutlet weak var month: UILabel!
     @IBOutlet weak var collectionview: JTAppleCalendarView!
+    
+    let locationManager = CLLocationManager()
+    var currentLocation:CLLocation!
+    var lat: Double!
+    var log: Double!
    
     
     let currentDate = Date()
@@ -39,8 +45,18 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // location delegate
+        
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.stopMonitoringSignificantLocationChanges()
+        
+        UserDefaults.standard.set("12.9145506221853", forKey: "latitude")
+        UserDefaults.standard.set("77.6122452890918", forKey: "longitude")
+        
         LogoutButton()
-        //self.collectionview.isScrollEnabled = false;
+        self.collectionview.isScrollEnabled = false;
         
         
         setupCalendarView()
@@ -90,6 +106,24 @@ class ViewController: UIViewController {
 
         
         
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        locationAutStatus()
+    }
+    
+    func locationAutStatus(){
+        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse{
+            currentLocation = locationManager.location
+            print(currentLocation.coordinate.latitude)
+            print(currentLocation.coordinate.longitude)
+            
+            lat = currentLocation.coordinate.latitude
+            log = currentLocation.coordinate.longitude
+        }else{
+            locationManager.requestWhenInUseAuthorization()
+            locationAutStatus()
+        }
     }
 
     func setupCalendarView()
@@ -144,11 +178,11 @@ class ViewController: UIViewController {
         if validCell.isSelected{
             validCell.selectedView.isHidden = false
 //            let timeDuration = UserDefaults.standard.value(forKey: "timeduration") as! String
-//            if timeDuration >= "3" {
-                //validCell.selectedView.backgroundColor = .green
+//            if timeDuration >= "9" {
+//                validCell.selectedView.backgroundColor = .green
 //            }else{
             validCell.selectedView.backgroundColor = hexStringToUIColor (hex:"#FBC94D")
-//            }
+           // }
         }else{
             validCell.selectedView.isHidden = true
             
@@ -177,7 +211,6 @@ class ViewController: UIViewController {
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -190,7 +223,6 @@ class ViewController: UIViewController {
         try! Auth.auth().signOut()
         let storyBoard = UIStoryboard(name:"Main",bundle:nil)
         let vcOBJ = storyBoard.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
-        // self.navigationController?.navigationBar.barTintColor = UIColor.green
         self.navigationController?.pushViewController(vcOBJ, animated: true)
 
         
@@ -200,7 +232,7 @@ class ViewController: UIViewController {
         
         let storyBoard = UIStoryboard(name:"Main",bundle:nil)
         let vcOBJ = storyBoard.instantiateViewController(withIdentifier: "TimeDetailsTableViewController") as! TimeDetailsTableViewController
-        // self.navigationController?.navigationBar.barTintColor = UIColor.green
+        vcOBJ.title = "Attendance Details"
         self.navigationController?.pushViewController(vcOBJ, animated: true)
         
         
@@ -275,6 +307,22 @@ extension ViewController: JTAppleCalendarViewDelegate{
             
         
         
+        
+        let radius: Double = 100 // miles // meters
+        let userLocation = CLLocation(latitude: lat, longitude: log)
+        let venueLocation = CLLocation(latitude: 12.9145506221853, longitude: 77.6122452890918)
+        let distanceInMeters = userLocation.distance(from: venueLocation)
+        //let distanceInMiles = distanceInMeters * 0.00062137
+        
+        if distanceInMeters > radius {
+            // user is near the venue
+            
+            print("You are not in office")
+            
+            return
+        }
+        
+        
                     employeeStatus.child("Check").observeSingleEvent(of:.value, with: {(DataSnapshot) in
         
                         self.check = DataSnapshot.value as? Bool
@@ -313,13 +361,24 @@ extension ViewController: JTAppleCalendarViewDelegate{
                                     UserDefaults.standard.synchronize()
                                     
                                     formatter.dateFormat = "dd/MM/yy hh:mm:ss"
-                                    let timeIn = UserDefaults.standard.object(forKey: "inTiming") as? Date
-                                    let timeOut = UserDefaults.standard.object(forKey: "outTiming") as? Date
-                                    let timeDifference = self.userCalendar.dateComponents(self.requestedComponent, from: timeIn!, to: timeOut!)
+//                                    do {
+                                    var timeIn = UserDefaults.standard.object(forKey: "inTiming") as? Date
+                                    if timeIn == nil{
+                                        //return
+                                        timeIn = Date()
+                                    }
                                     
-                                    let time = "\(timeDifference.hour!):\(timeDifference.minute!)"
-                                    let timeduration = "\(timeDifference.hour!)"
-                                    UserDefaults.standard.set(timeduration, forKey: "timeduration")
+                                    let timeOut = UserDefaults.standard.object(forKey: "outTiming") as? Date
+
+                                        let timeDifference = self.userCalendar.dateComponents(self.requestedComponent, from: timeIn!, to: timeOut!)
+                                        let time = "\(timeDifference.hour!):\(timeDifference.minute!)"
+                                        let timeduration = "\(timeDifference.hour!)" as! String
+                                        UserDefaults.standard.set(timeduration, forKey: "timeduration")
+//                                    }catch{
+//                                       print("erro")
+//                                    }
+                                    
+                                    
                                     
                                     employeeDuration.updateChildValues([myStringafd:time], withCompletionBlock: { (err, ref) in
                                         if err != nil{

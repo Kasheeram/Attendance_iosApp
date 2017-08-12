@@ -524,7 +524,7 @@
 				DEVELOPMENT_TEAM = ZY3B78M368;
 				INFOPLIST_FILE = Attendance_iosApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "ATG.Attendance-iosApp";
+				PRODUCT_BUNDLE_IDENTIFIER = ATG.AttendanceApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -538,7 +538,7 @@
 				DEVELOPMENT_TEAM = ZY3B78M368;
 				INFOPLIST_FILE = Attendance_iosApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "ATG.Attendance-iosApp";
+				PRODUCT_BUNDLE_IDENTIFIER = ATG.AttendanceApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
