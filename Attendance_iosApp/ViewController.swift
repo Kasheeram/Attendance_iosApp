@@ -23,12 +23,10 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
     var lat: Double!
     var log: Double!
    
-    
     let currentDate = Date()
     let formatter = DateFormatter()
     let userCalendar = Calendar.current
     let requestedComponent: Set<Calendar.Component> = [.month,.day,.hour,.minute,.second]
-    
     
     let outsideMonthColor = UIColor(colorWithHexValue: 0x584a66)
     let monthColor = UIColor.white
@@ -45,8 +43,6 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // location delegate
-        
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
@@ -57,15 +53,10 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
         
         LogoutButton()
         self.collectionview.isScrollEnabled = false;
-        
-        
         setupCalendarView()
         calendarView.scrollToDate(Date.init())
-        
-       // let formatter = DateFormatter()
-        // initially set the format based on your datepicker date
+
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        
         let myString = formatter.string(from: Date())
         // convert your string to date
         let yourDate = formatter.date(from: myString)
@@ -74,38 +65,24 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
         // again convert your date to string
         let currentDate = formatter.string(from: yourDate!)
         
-        
         let uid = Auth.auth().currentUser?.uid
         if uid == nil{
             return
         }
         
-        
         let employeeStatus = Database.database().reference().child("Employees").child(uid!).child("Status")
         employeeStatus.child("PreviousDate").observeSingleEvent(of:.value, with: {(DataSnapshot) in
-            
             let previousDate = DataSnapshot.value as? String
             print("check123=\(String(describing: previousDate))")
-            
-            
             if previousDate != currentDate{
-                
                 employeeStatus.updateChildValues(["Check":false], withCompletionBlock: { (err, ref) in
                     if err != nil{
                         print(err)
                         return
                     }
                 })
-                
             }
-            
-            
-            
-            
         })
-
-        
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -130,14 +107,9 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
     {
         calendarView.minimumLineSpacing = 0
         calendarView.minimumInteritemSpacing = 0
-        
-        // setup label
-        
         calendarView.visibleDates{(visbleDates) in
-            
-            self.setupViewOfCalendar(from: visbleDates)
+        self.setupViewOfCalendar(from: visbleDates)
         }
-        
     }
     
     func handleCellTextColor(view: JTAppleCell?,cellState: CellState){
@@ -152,15 +124,11 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
                 validCell.dateLabel.textColor = outsideMonthColor
             }
         }
-        
-        
-        
         let date = cellState.date
         self.formatter.dateFormat = "yyyy MM dd"
         let dt  = self.formatter.string(from: date)
         let date2 = Date()
         let dt2 = self.formatter.string(from: date2)
-        
         if dt == dt2{
             validCell.dateLabel.textColor = todayDate
             validCell.selectedView.isHidden = false
@@ -169,9 +137,6 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
        
     }
 
-    
-    
-    
     func handleCellSelectedColor(view: JTAppleCell?,cellState: CellState){
          guard let validCell = view as? CustomCell else{ return }
         
@@ -187,10 +152,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
             validCell.selectedView.isHidden = true
             
         }
-        
-        
     }
-    
     
     func setupViewOfCalendar(from visbleDates:DateSegmentInfo){
         let date = visbleDates.monthDates.first!.date
@@ -199,12 +161,9 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
         
         self.formatter.dateFormat = "MMMM"
         self.month.text = self.formatter.string(from: date)
-
     }
     
-    
     func LogoutButton(){
-        
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(ViewController.rightButtonAction))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Status", style: .plain, target: self, action: #selector(ViewController.leftButtonAction))
     }
@@ -218,28 +177,22 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
         self.navigationItem.setHidesBackButton(true, animated:true);
     }
     
-    
     func rightButtonAction(){
         try! Auth.auth().signOut()
         let storyBoard = UIStoryboard(name:"Main",bundle:nil)
         let vcOBJ = storyBoard.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
         self.navigationController?.pushViewController(vcOBJ, animated: true)
-
-        
     }
+    
     func leftButtonAction(){
-        
-        
         let storyBoard = UIStoryboard(name:"Main",bundle:nil)
         let vcOBJ = storyBoard.instantiateViewController(withIdentifier: "TimeDetailsTableViewController") as! TimeDetailsTableViewController
         vcOBJ.title = "Attendance Details"
         self.navigationController?.pushViewController(vcOBJ, animated: true)
-        
-        
     }
 
     
-}
+    }
 
     extension ViewController: JTAppleCalendarViewDataSource{
         func configureCalendar(_ calendar: JTAppleCalendarView)->ConfigurationParameters{
@@ -253,8 +206,8 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
         
     }
 
-extension ViewController: JTAppleCalendarViewDelegate{
-    func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
+    extension ViewController: JTAppleCalendarViewDelegate{
+        func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
         let cell = calendar.dequeueReusableJTAppleCell(withReuseIdentifier: "CustomCell", for: indexPath) as! CustomCell
         cell.dateLabel.text = cellState.text
         
@@ -264,144 +217,95 @@ extension ViewController: JTAppleCalendarViewDelegate{
     }
     
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
-//        handleCellSelectedColor(view: cell, cellState: cellState)
+        //        handleCellSelectedColor(view: cell, cellState: cellState)
         handleCellTextColor(view: cell, cellState: cellState)
-        
-        print("kashee123")
-        
         let uid = Auth.auth().currentUser?.uid
         if uid == nil{
             return
         }
-        
-            
-            let formatter = DateFormatter()
-            // initially set the format based on your datepicker date
-            formatter.dateFormat = "dd-MMM-yyyy HH:mm:ss"
-            
-            let myString = formatter.string(from: Date())
-            // convert your string to date
-            let yourDate = formatter.date(from: myString)
-            //then again set the date format whhich type of output you need
-            formatter.dateFormat = "dd-MMM-yyyy"
-            // again convert your date to string
-            let myStringafd = formatter.string(from: yourDate!)
-            
-            let selectedDate = formatter.string(from: cellState.date)
-            print("date12=\(selectedDate)")
-            
-            if selectedDate != myStringafd{
-                return
-            }
-//        print("kashee1234")
-        
-            self.handleCellSelectedColor(view: cell, cellState: cellState)
-             print("date12=\(myStringafd)")
-             let values = [myStringafd:myString]
-            let ref = Database.database().reference()
-            let employeeStatus = ref.child("Employees").child(uid!).child("Status")
-            let employeeDuration = ref.child("Employees").child(uid!).child("Duration")
-            let employeeReferenceIn = ref.child("Employees").child(uid!).child("ComeIn")
-            let employeeReferenceOut = ref.child("Employees").child(uid!).child("ComeOut")
-            //let check:Bool!
-            
-        
-        
-        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd-MMM-yyyy HH:mm:ss"
+        let myString = formatter.string(from: Date())
+        let yourDate = formatter.date(from: myString)
+        formatter.dateFormat = "dd-MMM-yyyy"
+        let myStringafd = formatter.string(from: yourDate!)
+        let selectedDate = formatter.string(from: cellState.date)
+        print("date12=\(selectedDate)")
+        if selectedDate != myStringafd{
+            return
+        }
+        self.handleCellSelectedColor(view: cell, cellState: cellState)
+        print("date12=\(myStringafd)")
+        let values = [myStringafd:myString]
+        let ref = Database.database().reference()
+        let employeeStatus = ref.child("Employees").child(uid!).child("Status")
+        let employeeDuration = ref.child("Employees").child(uid!).child("Duration")
+        let employeeReferenceIn = ref.child("Employees").child(uid!).child("ComeIn")
+        let employeeReferenceOut = ref.child("Employees").child(uid!).child("ComeOut")
+        //let check:Bool!
         let radius: Double = 100 // miles // meters
         let userLocation = CLLocation(latitude: lat, longitude: log)
         let venueLocation = CLLocation(latitude: 12.9145506221853, longitude: 77.6122452890918)
         let distanceInMeters = userLocation.distance(from: venueLocation)
         //let distanceInMiles = distanceInMeters * 0.00062137
-        
         if distanceInMeters > radius {
             // user is near the venue
-            
             print("You are not in office")
-            
             return
         }
+        employeeStatus.child("Check").observeSingleEvent(of:.value, with: {(DataSnapshot) in
+            self.check = DataSnapshot.value as? Bool
+            print("check125=\(self.check)")
+            if !self.check{
+                employeeReferenceIn.updateChildValues(values, withCompletionBlock: { (err, ref) in
+                    if err != nil{
+                        print(err)
+                        return
+                    }
+                })
+                UserDefaults.standard.set(Date(), forKey: "inTiming")
+                employeeStatus.updateChildValues(["Check":true,"PreviousDate":myStringafd], withCompletionBlock: { (err, ref) in
+                    if err != nil{
+                        print(err)
+                        return
+                    }
+                })
         
-        
-                    employeeStatus.child("Check").observeSingleEvent(of:.value, with: {(DataSnapshot) in
-        
-                        self.check = DataSnapshot.value as? Bool
-                        print("check125=\(self.check)")
-        
-                                if !self.check{
-                                        employeeReferenceIn.updateChildValues(values, withCompletionBlock: { (err, ref) in
-                                            if err != nil{
-                                                print(err)
-                                                return
-                                            }
-                                        })
+            }else{
+                employeeReferenceOut.updateChildValues(values, withCompletionBlock: { (err, ref) in
+                    if err != nil{
+                        print(err)
+                        return
+                    }
+                })
+                UserDefaults.standard.set(Date(), forKey: "outTiming")
+                UserDefaults.standard.synchronize()
+                formatter.dateFormat = "dd/MM/yy hh:mm:ss"
+                var timeIn = UserDefaults.standard.object(forKey: "inTiming") as? Date
+                if timeIn == nil{
+                    timeIn = Date()
+                }
+                let timeOut = UserDefaults.standard.object(forKey: "outTiming") as? Date
+                let timeDifference = self.userCalendar.dateComponents(self.requestedComponent, from: timeIn!, to: timeOut!)
+                let time = "\(timeDifference.hour!):\(timeDifference.minute!)"
+                let timeduration = "\(timeDifference.hour!)" as! String
+                UserDefaults.standard.set(timeduration, forKey: "timeduration")
+                employeeDuration.updateChildValues([myStringafd:time], withCompletionBlock: { (err, ref) in
+                    if err != nil{
+                        print(err)
+                        return
+                    }
+                })
                                     
-                                    
-                                    UserDefaults.standard.set(Date(), forKey: "inTiming")
-                                        employeeStatus.updateChildValues(["Check":true,"PreviousDate":myStringafd], withCompletionBlock: { (err, ref) in
-                                            if err != nil{
-                                                print(err)
-                                                return
-                                            }
-                                        })
-        
-                                    }else{
-                                
-                                        employeeReferenceOut.updateChildValues(values, withCompletionBlock: { (err, ref) in
-                                            if err != nil{
-                                                print(err)
-                                                print("kashee12345")
-                                                return
-                                            }
-                                        })
-                                    
-                                    
-                                    
-                                    UserDefaults.standard.set(Date(), forKey: "outTiming")
-                                    UserDefaults.standard.synchronize()
-                                    
-                                    formatter.dateFormat = "dd/MM/yy hh:mm:ss"
-//                                    do {
-                                    var timeIn = UserDefaults.standard.object(forKey: "inTiming") as? Date
-                                    if timeIn == nil{
-                                        //return
-                                        timeIn = Date()
-                                    }
-                                    
-                                    let timeOut = UserDefaults.standard.object(forKey: "outTiming") as? Date
-
-                                        let timeDifference = self.userCalendar.dateComponents(self.requestedComponent, from: timeIn!, to: timeOut!)
-                                        let time = "\(timeDifference.hour!):\(timeDifference.minute!)"
-                                        let timeduration = "\(timeDifference.hour!)" as! String
-                                        UserDefaults.standard.set(timeduration, forKey: "timeduration")
-//                                    }catch{
-//                                       print("erro")
-//                                    }
-                                    
-                                    
-                                    
-                                    employeeDuration.updateChildValues([myStringafd:time], withCompletionBlock: { (err, ref) in
-                                        if err != nil{
-                                            print(err)
-                                            return
-                                        }
-                                    })
-
-                                    
-                                    
-                                    }
-                        
-                      
-                    })
-        
+            }
+            
+        })
         
     }
     
     func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
-        
          handleCellSelectedColor(view: cell, cellState: cellState)
          handleCellTextColor(view: cell, cellState: cellState)
-        
     }
     
     func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {

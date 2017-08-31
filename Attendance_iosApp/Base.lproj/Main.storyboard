@@ -23,13 +23,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Menu Filled-50" translatesAutoresizingMaskIntoConstraints="NO" id="O5d-Sc-2Rk">
-                                <rect key="frame" x="320" y="28" width="40" height="38"/>
-                                <color key="backgroundColor" red="0.2274509804" green="0.16078431369999999" blue="0.29411764709999999" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="40" id="qlz-ac-iAH"/>
-                                </constraints>
-                            </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="ReB-Cm-aZF">
                                 <rect key="frame" x="2" y="28" width="371" height="352"/>
                                 <subviews>
@@ -189,13 +182,9 @@
                         </subviews>
                         <color key="backgroundColor" red="0.2274509804" green="0.16078431369999999" blue="0.29411764709999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="ReB-Cm-aZF" firstAttribute="top" secondItem="O5d-Sc-2Rk" secondAttribute="top" id="0iO-XE-p8g"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="O5d-Sc-2Rk" secondAttribute="bottom" constant="601" id="6WC-HD-xJL"/>
                             <constraint firstItem="ReB-Cm-aZF" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" symbolic="YES" id="8jL-ef-xNA"/>
                             <constraint firstAttribute="trailing" secondItem="ReB-Cm-aZF" secondAttribute="trailing" constant="2" id="CQX-n8-fbe"/>
                             <constraint firstItem="ReB-Cm-aZF" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="2" id="Dbj-lq-g2N"/>
-                            <constraint firstItem="O5d-Sc-2Rk" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="QVQ-xV-7AN"/>
-                            <constraint firstAttribute="trailing" secondItem="O5d-Sc-2Rk" secondAttribute="trailing" constant="15" id="Z6I-jS-eiM"/>
                             <constraint firstItem="ReB-Cm-aZF" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="2" id="kJ3-vf-bvH"/>
                         </constraints>
                     </view>
@@ -570,7 +559,4 @@
             <point key="canvasLocation" x="-849" y="139"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="Menu Filled-50" width="24" height="24"/>
-    </resources>
 </document>
